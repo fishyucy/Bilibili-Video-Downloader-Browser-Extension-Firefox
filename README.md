@@ -75,7 +75,10 @@
   npx web-ext sign --source-dir . --channel unlisted --api-key <AMO Key> --api-secret <AMO Secret>
   ```
 
-  API 密钥在 [addons.mozilla.org](https://addons.mozilla.org/developers/) 开发者中心生成（免费）
+  API 密钥在 [addons.mozilla.org](https://addons.mozilla.org/developers/) 开发者中心生成（免费）。
+  在**仓库根目录**执行；仓库自带 `.web-ext-config.mjs`，会自动排除宿主二进制
+  （`native-host\bin\`）、宿主源码与测试样本 —— 保证打出的 xpi 只含扩展本体
+  （即使在本地跑过宿主编译/安装也一样）。
 - 未签名的 `.xpi` 只能在 **Developer Edition / Nightly** 里永久安装
   （`about:config` 把 `xpinstall.signatures.required` 设为 `false`；正式版会忽略这个开关）
 
@@ -247,7 +250,10 @@ release Firefox installs it directly.
   npx web-ext sign --source-dir . --channel unlisted --api-key <AMO Key> --api-secret <AMO Secret>
   ```
 
-  Generate API keys for free in the [addons.mozilla.org](https://addons.mozilla.org/developers/) developer hub
+  Generate API keys for free in the [addons.mozilla.org](https://addons.mozilla.org/developers/) developer hub.
+  Run it from the **repository root**; the repo ships `.web-ext-config.mjs`, which excludes the host
+  binaries (`native-host\bin\`), the host sources and the test samples -- so the xpi contains only
+  the extension itself, even after you have built or installed the host locally.
 - An unsigned `.xpi` can only be installed permanently in **Developer Edition / Nightly**
   (`about:config`: set `xpinstall.signatures.required` to `false`; release Firefox ignores it)
 
