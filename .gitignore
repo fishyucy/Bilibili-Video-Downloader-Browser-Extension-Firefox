@@ -75,3 +75,7 @@ native-host/selfcheck.txt
 .DS_Store
 Thumbs.db
 desktop.ini
+
+# ---------- web-ext（Firefox 签名工具）的临时文件 ----------
+.amo-upload-uuid
+web-ext-artifacts/
