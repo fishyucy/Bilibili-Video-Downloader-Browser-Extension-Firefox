@@ -47,33 +47,41 @@
 当前 ESR / 正式版均满足）。Chrome / Edge 用户请用兄弟项目
 [Chrome 版](https://github.com/fishyucy/Bilibili-Video-Downloader-Browser-Extension)。
 
-> 用 release 里的压缩包的话：**先解压**。临时载入选解压出来的文件夹里的 `manifest.json`；
-> 永久安装则需要下面说的签名 `.xpi`。
+从本仓库的 **Releases** 下载 `Bilibili-Video-Downloader-Firefox-vX.Y.Z.xpi`
+（发布版已通过 addons.mozilla.org 的 **unlisted / 自主分发签名**），两种装法任选：
 
-Firefox 对扩展有**签名要求**，按需求选一种方式：
+### 方式一：直接安装（推荐，重启浏览器后仍保留）
 
-### 方式一：临时载入（体验 / 开发，无需签名）
+1. 打开 `about:addons`（或菜单 →「扩展和主题」）
+2. 点右上角的**齿轮 ⚙** →「**从文件安装附加组件…**」
+3. 选中刚下载的 `.xpi`
+
+也可以直接把 `.xpi` 拖进 Firefox 窗口完成安装。因为已带 Mozilla 签名，正式版 Firefox 可直接安装。
+
+### 方式二：临时载入（开发 / 调试，重启浏览器后失效）
 
 1. 地址栏输入 `about:debugging#/runtime/this-firefox` 回车
-2. 点「临时载入附加组件…」，**选中本文件夹里的 `manifest.json`**（选文件，不是选文件夹）
+2. 点「临时载入附加组件…」，选中 **`.xpi` 文件**（或本文件夹里的 `manifest.json`）
 3. 打开任意 B 站视频页，右下角出现下载面板即安装成功
 
-> 注意：临时载入的扩展在**浏览器重启后失效**，需要重新载入一次。适合体验与开发调试。
+> 临时载入的扩展在**浏览器重启后失效**，重启后重新载入一次即可；改代码后在这里点「重新载入」。
 
-### 方式二：永久安装（需要签名的 `.xpi`）
+### 自己构建 / 自己签名（开发者）
 
-Firefox 正式版只接受**已签名**的扩展，两个途径：
+- 源码临时载入：选本文件夹里的 `manifest.json` 即可
+- 生成签名的 xpi：装好 Node 后运行
 
-- **AMO 签名（推荐）**：把源码包提交到 [addons.mozilla.org](https://addons.mozilla.org/developers/)，
-  选「自主分发 / unlisted」方式签名，拿到签名的 `.xpi` 后即可在正式版 Firefox 里永久安装
-  （AMO 签名免费；unlisted 表示不会公开上架到 AMO 搜索）
-- **Developer Edition / Nightly**：在 `about:config` 里把 `xpinstall.signatures.required`
-  设为 `false`，即可安装未签名的 `.xpi`（**正式版 Firefox 忽略这个开关**，只有上述两个版本生效）
+  ```bat
+  npx web-ext sign --source-dir . --channel unlisted --api-key <AMO Key> --api-secret <AMO Secret>
+  ```
 
-**三个注意点**：
+  API 密钥在 [addons.mozilla.org](https://addons.mozilla.org/developers/) 开发者中心生成（免费）
+- 未签名的 `.xpi` 只能在 **Developer Edition / Nightly** 里永久安装
+  （`about:config` 把 `xpinstall.signatures.required` 设为 `false`；正式版会忽略这个开关）
 
-- 临时载入选的是 **`manifest.json`**；永久安装装的是**签好的 `.xpi`**（源码 zip 不能直接装）
-- 载入后**不要移动或删除**这个文件夹，否则扩展会失效（必要时重新载入一次即可）
+**两个注意点**：
+
+- 用「临时载入 + 源码」方式开发时，**不要移动或删除**这个文件夹，否则扩展会失效（必要时重新载入即可）
 - 改了代码后：回到 `about:debugging` 点该扩展的「重新载入」，再刷新 B 站页面
 
 ### 可选：原生 FFmpeg（合并更好）
@@ -209,37 +217,44 @@ This is the **Firefox edition** (Manifest V3, requires **Firefox 140 or newer** 
 2025-or-later build; current ESR and release both qualify). Chrome / Edge users want the
 sibling [Chrome edition](https://github.com/fishyucy/Bilibili-Video-Downloader-Browser-Extension).
 
-> Using the ZIP from Releases? **Unzip it first.** For a temporary load, pick the `manifest.json`
-> inside the unzipped folder; a permanent install needs the signed `.xpi` described below.
+Grab `Bilibili-Video-Downloader-Firefox-vX.Y.Z.xpi` from this repository's **Releases**
+(the release build carries a Mozilla **unlisted / self-distribution signature**), then pick either way:
 
-Firefox **requires signing** for extensions, so pick the way that fits:
+### Way 1: direct install (recommended; survives restarts)
 
-### Way 1: temporary load (trying it out / development, no signing)
+1. Open `about:addons` (or menu → "Add-ons and themes")
+2. Click the **gear ⚙** in the top-right → "**Install Add-on From File…**"
+3. Select the downloaded `.xpi`
+
+Dragging the `.xpi` onto a Firefox window works too. Because it carries a Mozilla signature,
+release Firefox installs it directly.
+
+### Way 2: temporary load (development / debugging; gone after a restart)
 
 1. Type `about:debugging#/runtime/this-firefox` in the address bar
-2. Click **Load Temporary Add-on…** and **select the `manifest.json` inside this folder** (a file, not the folder)
+2. Click **Load Temporary Add-on…** and select the **`.xpi` file** (or the `manifest.json` in this folder)
 3. Open any Bilibili video page — the panel appearing bottom-right means it worked
 
-> Note: a temporary add-on **disappears when the browser restarts**; just load it again.
-> This is the way to try it out and to develop.
+> A temporary add-on **disappears when the browser restarts**; just load it again. After editing
+> code, click **Reload** there and refresh the Bilibili page.
 
-### Way 2: permanent install (needs a signed `.xpi`)
+### Building / signing it yourself (developers)
 
-Release Firefox only installs **signed** extensions. Two routes:
+- Temporary-load the sources: pick this folder's `manifest.json`
+- Produce a signed xpi (needs Node):
 
-- **AMO signing (recommended)**: submit the source package on
-  [addons.mozilla.org](https://addons.mozilla.org/developers/) choosing the
-  "self-distribution / unlisted" channel; the signed `.xpi` it gives you installs permanently
-  in release Firefox (signing is free; unlisted means it is not listed in AMO search)
-- **Developer Edition / Nightly**: set `xpinstall.signatures.required` to `false` in
-  `about:config` and install an unsigned `.xpi` (**release Firefox ignores this switch**; only
-  those two editions honour it)
+  ```bat
+  npx web-ext sign --source-dir . --channel unlisted --api-key <AMO Key> --api-secret <AMO Secret>
+  ```
 
-**Three things to watch out for:**
+  Generate API keys for free in the [addons.mozilla.org](https://addons.mozilla.org/developers/) developer hub
+- An unsigned `.xpi` can only be installed permanently in **Developer Edition / Nightly**
+  (`about:config`: set `xpinstall.signatures.required` to `false`; release Firefox ignores it)
 
-- A temporary load picks the **`manifest.json`**; a permanent install takes the **signed `.xpi`**
-  (a source zip cannot be installed directly)
-- Do not move or delete the folder afterwards, or the extension stops working (just load it again if you must)
+**Two things to watch out for:**
+
+- When developing from sources with a temporary load, do not move or delete this folder afterwards,
+  or the extension stops working
 - After editing code: click **Reload** in `about:debugging`, then refresh the Bilibili page
 
 ### Optional: native FFmpeg

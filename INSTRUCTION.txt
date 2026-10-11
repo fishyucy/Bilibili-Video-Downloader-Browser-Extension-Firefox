@@ -24,27 +24,41 @@
   分别适配各自的浏览器，共同维护（并非新旧版本）。
   要求 Firefox 140 及以上（2025 年后的版本；当前 ESR / 正式版都满足）。
 
-  临时载入（体验 / 开发，无需签名）：
+  从本仓库的 Releases 下载 Bilibili-Video-Downloader-Firefox-vX.Y.Z.xpi
+  （发布版已通过 addons.mozilla.org 的 unlisted / 自主分发签名）。
+
+  ── 方式一：直接安装（推荐，重启浏览器后仍保留）──
+
+    1. 打开 about:addons（或菜单 →「扩展和主题」）
+
+    2. 点右上角的齿轮 ⚙ →「从文件安装附加组件…」
+
+    3. 选中刚下载的 .xpi
+
+    也可以直接把 .xpi 拖进 Firefox 窗口。因为带 Mozilla 签名，
+    正式版 Firefox 可以直接安装。
+
+  ── 方式二：临时载入（开发 / 调试，重启浏览器后失效）──
 
     1. 地址栏输入 about:debugging#/runtime/this-firefox 回车
 
-    2. 点「临时载入附加组件…」，选中本文件夹里的 manifest.json
+    2. 点「临时载入附加组件…」，选中 .xpi 文件
+       （或本文件夹里的 manifest.json）
 
     3. 打开任意 B 站视频页，右下角应出现下载面板
 
-    注意：临时载入的扩展在浏览器重启后失效，需要重新载入一次。
+    临时载入的扩展在浏览器重启后失效，重启后重新载入一次即可。
 
-  永久安装（需要签名的 .xpi）：
+  ── 自己构建 / 自己签名（开发者）──
 
-    Firefox 正式版只接受已签名的扩展，两个途径：
-
-      · AMO 签名（推荐）：把源码包提交到 addons.mozilla.org，
-        选「自主分发 / unlisted」方式签名，下载签好的 .xpi 安装即可
-        （免费；unlisted 不会公开上架到 AMO 搜索）
-
-      · Developer Edition / Nightly：about:config 里把
-        xpinstall.signatures.required 设为 false，可安装未签名 .xpi
-        （正式版 Firefox 会忽略这个开关）
+    · 源码临时载入：选本文件夹里的 manifest.json 即可
+    · 生成签名 xpi：装好 Node 后运行
+        npx web-ext sign --source-dir . --channel unlisted
+            --api-key <AMO Key> --api-secret <AMO Secret>
+      API 密钥在 addons.mozilla.org 开发者中心生成（免费）
+    · 未签名的 .xpi 只能在 Developer Edition / Nightly 里永久安装
+      （about:config 把 xpinstall.signatures.required 设为 false；
+       正式版会忽略这个开关）
 
   以后改了代码：回到 about:debugging 点该扩展的「重新载入」，
   再刷新 B 站页面即可生效。
@@ -364,26 +378,40 @@
   adapted per browser and maintained side by side (neither is an old/new generation).
   Requires Firefox 140 or newer (any 2025-or-later build; current ESR / release both qualify).
 
-  Temporary load (trying it out / development; no signing):
+  Grab Bilibili-Video-Downloader-Firefox-vX.Y.Z.xpi from this repository's Releases
+  (the release build carries a Mozilla unlisted / self-distribution signature).
+
+  -- Way 1: direct install (recommended; survives restarts) --
+
+    1. Open about:addons (or menu -> "Add-ons and themes")
+
+    2. Click the gear in the top-right -> "Install Add-on From File..."
+
+    3. Select the downloaded .xpi
+
+    Dragging the .xpi onto a Firefox window works too. Because it carries a Mozilla
+    signature, release Firefox installs it directly.
+
+  -- Way 2: temporary load (development / debugging; gone after a restart) --
 
     1. Type about:debugging#/runtime/this-firefox in the address bar
 
-    2. Click "Load Temporary Add-on..." and select the manifest.json inside this folder
+    2. Click "Load Temporary Add-on..." and select the .xpi file
+       (or the manifest.json in this folder)
 
     3. Open any Bilibili video page -- the panel should appear in the bottom-right corner
 
-    Note: a temporary add-on disappears when the browser restarts; simply load it again.
+    A temporary add-on disappears when the browser restarts; simply load it again.
 
-  Permanent install (needs a signed .xpi):
+  -- Building / signing it yourself (developers) --
 
-    Release Firefox only installs signed extensions. Two routes:
-
-      . AMO signing (recommended): submit the source package on addons.mozilla.org
-        through the "self-distribution / unlisted" channel and install the signed .xpi
-        (free; unlisted means it is not listed in AMO search)
-
-      . Developer Edition / Nightly: set xpinstall.signatures.required to false in
-        about:config, then install an unsigned .xpi (release Firefox ignores that switch)
+    . Temporary-load the sources: pick this folder's manifest.json
+    . Produce a signed xpi (needs Node):
+        npx web-ext sign --source-dir . --channel unlisted
+            --api-key <AMO Key> --api-secret <AMO Secret>
+      Generate API keys for free in the addons.mozilla.org developer hub
+    . An unsigned .xpi can only be installed permanently in Developer Edition / Nightly
+      (about:config: xpinstall.signatures.required = false; release Firefox ignores it)
 
   After editing the code: go back to about:debugging, click "Reload" on the add-on,
   then refresh the Bilibili page.
